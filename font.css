@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+body {
+      font-family: 'Roboto Condensed', sans-serif;
+      font-weight:300 !important;
+      margin:0px;
+      background:rgb(247, 245, 245)
+      margin-top:100px;
+      
+}
+
+body h1 {
+      font-weight:300;
+      margin: 20px 30px;
+      /*margin: top(px), right(px), bottom, left;*/
+}
+
+body h2 {
+    font-weight:300;
+    margin: 20px 30px;
+    
+    /*margin: top(px), right(px), bottom, left;*/
+}
+body h3 {
+    font-weight:300;
+    margin: 20px 30px;
+    font-style:bold;
+    /*margin: top(px), right(px), bottom, left;*/
+}
+#main-header {
+    border-bottom:2px solid #000;
+    position:relative;
+    width:100%;
+    background:rgb(255, 255, 255);
+    top:0px;
+   /* border-width:2px;
+    border-color:#000 */  
+} /* the dashed instead of solid (border: 1px solid#000;) would be a good border for a coupon*/
+
+#main-header::before {
+    content: "Contact form"  ;
+    /*font-color:rgb(255,255,255);*/
+    display:block;
+    width:1500px;
+    height:20px;;
+    background: #000;
+      
+}
+
+
+#online-courses { 
+    width: 1000px;
+    margin:auto;
+    margin-top: 20px;
+    
+}
+
+subject {
+    width:301px;
+    display:inline-block ;
+    border: 1px solid #000000;
+    padding:10px;
+    margin: 20px 20px;
+    box-shadow:2px 2px 6px rgba(0,0,0,.3);
+    transition:box-shadow 500ms, background 3s;
+}
+.go-button{
+    display:inline-block ;
+}
+subject:hover{
+    box-shadow: 5px 5px 20px rgba(0,0,0,.7);
+}
+
+course{
+    margin: 20px 100px;
+     
+}
+
+
+
+.course-image {
+    height: 200px;
+    width: 200px;
+    background-size:cover !important;
+    background-position:center !important;
+    border-radius:100%;
+    margin:auto;
+   
+
+
+
+}
+.logo-image{
+    height: 50px;
+    width: 50px;
+    background-size:cover !important;
+    background-position:center !important;
+    position:relative;
+    border-radius:100%;
+    display:inline-block !important;
+    left:30px;
+    top:7px;
+    
+}
+ 
+#site-title{
+    font-family: 'Chakra Petch', sans-serif;
+    display:inline-block !important;
+    margin:20px 30px;
+    position:relative;
+
+}
+a {
+    text-decoration:none;
+    text-decoration-color: rgb(0, 0, 0);
+   
+}
+
+
+
+ p{
+    word-spacing:1px;
+    margin: 20px 30px;
+    max-height:200px;
+    overflow: hidden
+    
+
+}
+
+.my-input {
+    display:block;
+    width:50%;
+    margin:10px;
+    padding: 10px 20px;
+    border-radius: 5px 10px ;
+    border:1px solid #000;
+
+}
+.my-input:focus {
+    background:#405dff
+    
+
+}
+.lg-input{
+    width: 900px
+    border: 1px solid rgb(0,0,0);
+    margin:0px 500px;
+
+} 
+
+.question-input{
+    width: 100000px
+    height:100px
+    border: 1px solid rgb(0,0,0);
+    margin:0px 500px;
+
+
+}
+subject:active{
+    opacity:0.4;
+
+}
