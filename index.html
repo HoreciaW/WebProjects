@@ -1,211 +1,1675 @@
-
+<!-- Specify HTML5 doctype declaration to ensure correct browser rendering mode -->
 <!DOCTYPE html>
-<html>
+<!-- Set primary document language to English -->
+<html lang="en">
+<!-- Head section containing meta info, stylesheet links, and title -->
 <head>
- <meta charset="UTF-8">
+    <!-- Set character encoding to standard UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- Configure responsive viewport tag so mobile devices render with proper scale -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title> Source elearning platform </title> 
-<link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
-      crossorigin="anonymous"
-    />
-<link rel="stylesheet" href="font.css"/>
+    <!-- Document title displayed on the browser tab -->
+    <title>Studio Booking App & n8n Integration</title>
+    
+    <!-- Load Tailwind CSS framework via CDN for utility-based styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons library script for SVG vector icon rendering -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Preconnect to Google Fonts server for faster typography loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- Preconnect to Google Fonts static domain -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Load custom typography fonts: 'Plus Jakarta Sans' for body and 'Playfair Display' for headings -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Inline Tailwind Configuration script to define custom color palettes and fonts -->
+    <script>
+        // Extend default Tailwind CSS theme with custom studio brand design tokens
+        tailwind.config = {
+            theme: {
+                extend: {
+                    // Define warm earth-tone color spectrum for studio branding
+                    colors: {
+                        studio: {
+                            50: '#faf8f6',  // Warm off-white background
+                            100: '#f4efe9', // Soft background border color
+                            200: '#e7ddd3', // Light divider lines
+                            300: '#d5c3b3', // Subtle borders & icons
+                            400: '#bfa38f', // Secondary accent tone
+                            500: '#ab8872', // Medium brand badge color
+                            600: '#96715b', // Primary brand theme color
+                            700: '#7b5a48', // Dark brand highlight text
+                            800: '#644a3c', // Deep contrast text
+                            900: '#523d32', // Darkest brand shade
+                        },
+                        // Define complementary blush accent color spectrum
+                        blush: {
+                            50: '#fdf8f8',  // Very soft pink background tint
+                            100: '#fbeeee', // Pink pill highlight
+                            200: '#f8dcdc', // Light pink border
+                            300: '#f2c1c1', // Vibrant blush tag
+                            400: '#e89e9e', // Coral accent tint
+                            500: '#dc7878', // Primary pink status color
+                        }
+                    },
+                    // Assign custom Google Fonts to standard font utility classes
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'], // Main body text font
+                        serif: ['Playfair Display', 'serif'],       // Header serif font
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom embedded CSS styles for scrollbars and smooth UX tweaks -->
+    <style>
+        /* Target Webkit scrollbar width and height for custom sleek styling */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;  /* Vertical scrollbar width */
+            height: 6px; /* Horizontal scrollbar height */
+        }
+        /* Style the background track of custom scrollbars */
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f4efe9; /* Light studio background color */
+            border-radius: 9999px; /* Pill rounded corners */
+        }
+        /* Style the draggable thumb handle of custom scrollbars */
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d5c3b3; /* Muted brown thumb color */
+            border-radius: 9999px; /* Pill rounded corners */
+        }
+        /* Change thumb background on hover interaction */
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #ab8872; /* Active dark studio thumb color */
+        }
+    </style>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-    <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-    <img  src="Source.JPG" width="50" height="50">
+<!-- Main document body element with warm background and full-screen column layout -->
+<body class="bg-studio-50 text-stone-800 antialiased font-sans min-h-screen flex flex-col">
+
+    <!-- Sticky Header containing studio branding and view tab toggles -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-studio-200 sticky top-0 z-40">
+        <!-- Flexbox row wrapper for header content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Studio Branding Block (Logo + Title) -->
+            <div class="flex items-center space-x-3">
+                <!-- Profile Avatar Monogram -->
+                <div class="relative">
+                    <img id="headerProfilePic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt=" Profile" class="w-10 h-10 rounded-full object-cover border-2 border-studio-600 shadow-md">
+                </div>
+                <!-- Title & Subtitle text container -->
+                <div>
+                    <!-- Studio Business Name -->
+                    <h1 class="font-serif text-xl font-semibold tracking-wide text-stone-900"> Nails Studio </h1>
+                    <!-- Technician specialization subtitle -->
+                    <p class="text-xs text-studio-500 font-medium">Nail Artistry & Care </p>
+                </div>
+            </div>
+
+            <!-- Header View Switcher Tabs (App Preview vs About Me vs n8n Code Node View) -->
+            <div class="flex bg-studio-100 p-1 rounded-xl text-xs font-semibold gap-1 overflow-x-auto custom-scrollbar">
+                <!-- Tab Button 1: Displays the live interactive booking form -->
+                <button id="tabAppBtn" onclick="switchMainTab('app')" class="px-3.5 py-2 rounded-lg bg-white shadow-sm text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                    <i data-lucide="smartphone" class="w-4 h-4 text-studio-600"></i>
+                    <span>Booking App</span>
+                </button>
+
+                <!-- Tab Button 2: Displays About Me, Portfolio & Reviews -->
+               <!-- <button id="tabAboutBtn" onclick="switchMainTab('about')" class="px-3.5 py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                    <i data-lucide="user" class="w-4 h-4 text-studio-600"></i>
+                    <span>About Me & Reviews</span>
+                </button> -->
+
+                <!-- Tab Button 3: Displays the n8n JavaScript Code Node logic -->
+                 <!--  <button id="tabNodeBtn" onclick="switchMainTab('node')" class="px-3.5 py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap">
+                    <i data-lucide="code-2" class="w-4 h-4 text-studio-600"></i>
+                    <span>n8n Backend Logic</span>
+                </button>-->
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP VIEW (Active when booking appointment) -->
+    <main id="mainAppView" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Step Progress Indicator Component -->
+        <div class="mb-8">
+            <!-- Centered progress tracker container -->
+            <div class="max-w-xl mx-auto flex items-center justify-between relative">
+                <!-- Background gray line connecting step dots -->
+                <div class="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-0.5 bg-studio-200 -z-10"></div>
+                <!-- Dynamic active progress line colored as user advances steps -->
+                <div id="progressLine" class="absolute top-1/2 left-0 -translate-y-1/2 h-0.5 bg-studio-600 transition-all duration-300 -z-10" style="width: 0%;"></div>
+
+                <!-- Step Indicator 1: Services Selection -->
+                <button onclick="goToStep(1)" id="stepBtn1" class="flex flex-col items-center gap-1 group focus:outline-none">
+                    <!-- Step 1 Circle Badge -->
+                    <div id="stepCircle1" class="w-10 h-10 rounded-full bg-studio-600 text-white flex items-center justify-center font-semibold text-sm transition-all duration-300 ring-4 ring-studio-50">
+                        1
+                    </div>
+                    <!-- Step 1 Label -->
+                    <span id="stepLabel1" class="text-xs font-semibold text-studio-700">Services</span>
+                </button>
+
+                <!-- Step Indicator 2: Date & Time Picker -->
+                <button onclick="goToStep(2)" id="stepBtn2" class="flex flex-col items-center gap-1 group focus:outline-none">
+                    <!-- Step 2 Circle Badge -->
+                    <div id="stepCircle2" class="w-10 h-10 rounded-full bg-white border-2 border-studio-300 text-stone-500 flex items-center justify-center font-semibold text-sm transition-all duration-300 ring-4 ring-studio-50">
+                        2
+                    </div>
+                    <!-- Step 2 Label -->
+                    <span id="stepLabel2" class="text-xs font-medium text-stone-400">Date & Time</span>
+                </button>
+
+                <!-- Step Indicator 3: Customer Details -->
+                <button onclick="goToStep(3)" id="stepBtn3" class="flex flex-col items-center gap-1 group focus:outline-none">
+                    <!-- Step 3 Circle Badge -->
+                    <div id="stepCircle3" class="w-10 h-10 rounded-full bg-white border-2 border-studio-300 text-stone-500 flex items-center justify-center font-semibold text-sm transition-all duration-300 ring-4 ring-studio-50">
+                        3
+                    </div>
+                    <!-- Step 3 Label -->
+                    <span id="stepLabel3" class="text-xs font-medium text-stone-400">Details</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Two-column responsive Grid: Left side for step controls, Right side for live dynamic summary card -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT CONTAINER: Multi-step views (Spans 8 out of 12 columns) -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- STEP 1 PANEL: SERVICE SELECTION -->
+                <div id="step1Content" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-studio-200">
+                    <!-- Panel Title & Description -->
+                    <div class="mb-6">
+                        <h2 class="font-serif text-2xl font-semibold text-stone-900">Select Services & Add-ons</h2>
+                        <p class="text-sm text-stone-500 mt-1">Combine treatments to build your customized appointment with your nail technician.</p>
+                    </div>
+
+                    <!-- Category Filter Buttons Bar -->
+                    <div class="flex gap-2 border-b border-studio-100 pb-4 mb-6 overflow-x-auto custom-scrollbar">
+                        <!-- Filter Button: Show All Treatments -->
+                        <button onclick="filterCategory('all')" class="cat-tab px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-900 text-white whitespace-nowrap transition-all" data-cat="all">All Treatments</button>
+                        <!-- Filter Button: Gel X Extensions Category -->
+                        <button onclick="filterCategory('extensions')" class="cat-tab px-4 py-1.5 rounded-full text-xs font-medium bg-studio-100 text-stone-600 hover:bg-studio-200 whitespace-nowrap transition-all" data-cat="extensions">Gel X & Extensions</button>
+                        <!-- Filter Button: Overlays & Refills Category -->
+                        <button onclick="filterCategory('overlay')" class="cat-tab px-4 py-1.5 rounded-full text-xs font-medium bg-studio-100 text-stone-600 hover:bg-studio-200 whitespace-nowrap transition-all" data-cat="overlay">Overlays & Refills</button>
+                        <!-- Filter Button: Nail Art Tier Category -->
+                        <button onclick="filterCategory('art')" class="cat-tab px-4 py-1.5 rounded-full text-xs font-medium bg-studio-100 text-stone-600 hover:bg-studio-200 whitespace-nowrap transition-all" data-cat="art">Nail Art Tiers</button>
+                        <!-- Filter Button: Manicure & Care Add-ons Category -->
+                        <button onclick="filterCategory('care')" class="cat-tab px-4 py-1.5 rounded-full text-xs font-medium bg-studio-100 text-stone-600 hover:bg-studio-200 whitespace-nowrap transition-all" data-cat="care">Care & Add-ons</button>
+                    </div>
+
+                    <!-- Services Grid Container (Populated dynamically via JavaScript renderServices function) -->
+                    <div id="servicesList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Dynamic service cards injected here -->
+                    </div>
+                </div>
+
+                <!-- STEP 2 PANEL: DATE & SLOT SELECTION (Initially Hidden) -->
+                <div id="step2Content" class="hidden bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-studio-200">
+                    <!-- Panel Title & Calculated Duration Badge -->
+                    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div>
+                            <h2 class="font-serif text-2xl font-semibold text-stone-900">Choose Appointment Time</h2>
+                            <!-- Subtitle showing total appointment time calculated dynamically -->
+                            <p class="text-sm text-stone-500 mt-1">Available slots automatically account for your calculated <span id="slotDurationBadge" class="font-semibold text-studio-700 bg-studio-100 px-2 py-0.5 rounded">0 mins</span> appointment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Horizontal Date Picker Bar -->
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Select Date</label>
+                        <!-- Date Strip Container populated by generateDateStrip() JS function -->
+                        <div id="dateStrip" class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+                            <!-- Dynamic date buttons injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Available Time Slots Section -->
+                    <div>
+                        <!-- Section Label & Security Shield indicator -->
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider">
+                                Available Time Slots (<span id="selectedDateText">Today</span>)
+                            </label>
+                            <span class="text-xs text-stone-400 flex items-center gap-1">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> No overlaps allowed
+                            </span>
+                        </div>
+
+                        <!-- Grid container for calculated available time slots -->
+                        <div id="slotsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                            <!-- Dynamic time slot buttons injected here -->
+                        </div>
+
+                        <!-- Warning message displayed when total duration cannot fit into remaining day schedule -->
+                        <div id="noSlotsWarning" class="hidden py-8 text-center bg-studio-50 rounded-xl border border-dashed border-studio-300">
+                            <i data-lucide="calendar-x" class="w-8 h-8 text-studio-400 mx-auto mb-2"></i>
+                            <p class="text-sm font-medium text-stone-700">No continuous slots fit your duration on this date.</p>
+                            <p class="text-xs text-stone-500 mt-1">Try selecting a different date or reducing add-on services.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3 PANEL: CUSTOMER FORM (Initially Hidden) -->
+                <div id="step3Content" class="hidden bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-studio-200">
+                    <!-- Panel Title -->
+                    <div class="mb-6">
+                        <h2 class="font-serif text-2xl font-semibold text-stone-900">Contact Information</h2>
+                        <p class="text-sm text-stone-500 mt-1">Where should we send your booking confirmation and calendar invite?</p>
+                    </div>
+
+                    <!-- Form for client input fields -->
+                    <form id="bookingForm" onsubmit="submitBooking(event)" class="space-y-4">
+                        <!-- Name & Phone Row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Input Field: Full Name -->
+                            <div>
+                                <label class="block text-xs font-semibold text-stone-700 mb-1">Full Name *</label>
+                                <input type="text" id="custName" required placeholder="Jane Doe" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:ring-2 focus:ring-studio-500 focus:border-transparent outline-none text-sm transition-colors">
+                            </div>
+                            <!-- Input Field: Phone Number -->
+                            <div>
+                                <label class="block text-xs font-semibold text-stone-700 mb-1">Phone Number *</label>
+                                <input type="tel" id="custPhone" required placeholder="(555) 000-0000" oninput="validatePhoneInput()" onblur="validatePhoneInput()" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:ring-2 focus:ring-studio-500 focus:border-transparent outline-none text-sm transition-colors">
+                                <p id="phoneErrorMsg" class="text-[11px] text-rose-500 font-medium mt-1 hidden flex items-center gap-1">
+                                    <i data-lucide="alert-circle" class="w-3 h-3"></i> Please enter a valid phone number (e.g., 555-000-0000 or 10 digits).
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Input Field: Email Address -->
+                        <div>
+                            <label class="block text-xs font-semibold text-stone-700 mb-1">Email Address (optional)</label>
+                            <input type="email" id="custEmail" placeholder="jane@example.com" oninput="validateEmailInput()" onblur="validateEmailInput()" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:ring-2 focus:ring-studio-500 focus:border-transparent outline-none text-sm transition-colors">
+                            <p id="emailErrorMsg" class="text-[11px] text-rose-500 font-medium mt-1 hidden flex items-center gap-1">
+                                <i data-lucide="alert-circle" class="w-3 h-3"></i> Please enter a valid email address (e.g., name@domain.com).
+                            </p>
+                        </div>
+
+                        <!-- Input Field: n8n Webhook Target Endpoint (Allows connecting live n8n workflow) -->
+                        <div>
+                            <!-- Embedded n8n Webhook Target Endpoint (Hidden from user) -->
+                            <input type="hidden" id="webhookUrlInput" value="https://n8n-render-skxs.onrender.com/webhook/9358c537-bc8f-405d-b663-30b2764983e5">
+                        </div>
+
+                        <!-- Textarea Field: Optional Notes/Design Requests -->
+                        <div>
+                            <label class="block text-xs font-semibold text-stone-700 mb-1">Special Notes / Inspiration Links (Optional)</label>
+                            <textarea id="custNotes" rows="3" placeholder="Add any details or nail art requests here..." class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:ring-2 focus:ring-studio-500 focus:border-transparent outline-none text-sm"></textarea>
+                        </div>
+
+                        <!-- Information Alert Box regarding Studio Policy -->
+                        <div class="p-4 bg-amber-50 border border-amber-200/60 rounded-xl text-xs text-amber-900 flex gap-3">
+                            <i data-lucide="info" class="w-5 h-5 text-amber-600 shrink-0"></i>
+                            <div>
+                                <p class="font-semibold">Cancellation Policy</p>
+                                <p class="mt-0.5 text-amber-800">Please provide at least 48 hours notice for cancellations. Your spot is reserved exclusively for your selected duration.</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- RIGHT CONTAINER: Sticky Live Appointment Summary Sidebar (Spans 4 out of 12 columns) -->
+            <div class="lg:col-span-4 sticky top-28">
+                <!-- Card Container -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-studio-200/80">
+                    <!-- Summary Card Header & Selected Item Counter Badge -->
+                    <div class="flex items-center justify-between pb-4 border-b border-studio-100">
+                        <h3 class="font-serif text-lg font-semibold text-stone-900 flex items-center gap-2">
+                            <i data-lucide="shopping-bag" class="w-5 h-5 text-studio-600"></i>
+                            Appointment Summary
+                        </h3>
+                        <!-- Badge updating with selected services count -->
+                        <span id="serviceCountBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-studio-100 text-studio-800">
+                            0 Items
+                        </span>
+                    </div>
+
+                    <!-- Dynamic Cart Items Container (Updated via JavaScript updateCartSummary function) -->
+                    <div id="cartItemsList" class="py-4 space-y-3 min-h-[120px] max-h-[260px] overflow-y-auto custom-scrollbar border-b border-studio-100">
+                        <!-- Default empty state -->
+                        <div class="text-center py-6 text-stone-400 text-xs">
+                            No services selected yet.
+                        </div>
+                    </div>
+
+                    <!-- Selected Time Slot Summary Block (Hidden until a slot is clicked in Step 2) -->
+                    <div id="selectedSlotSummary" class="py-3 border-b border-studio-100 text-xs text-stone-600 hidden">
+                        <div class="flex items-center gap-2 text-studio-700 font-semibold mb-1">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span>Selected Slot</span>
+                        </div>
+                        <p id="summarySlotDateText" class="font-medium text-stone-900">None</p>
+                        <p id="summarySlotTimeText" class="text-stone-500">None</p>
+                    </div>
+
+                    <!-- Live Calculated Totals Box (Duration + Price tallying) -->
+                    <div class="pt-4 space-y-2">
+                        <!-- Total Duration Line -->
+                        <div class="flex justify-between text-xs text-stone-500">
+                            <span>Estimated Duration</span>
+                            <!-- Live calculated sum of selected item durations -->
+                            <span id="cartTotalTime" class="font-semibold text-stone-800">0 mins</span>
+                        </div>
+                        <!-- Total Price Line -->
+                        <div class="flex justify-between items-baseline pt-2 border-t border-dashed border-studio-200">
+                            <span class="font-semibold text-stone-900 text-sm">Total </span>
+                            <!-- Live calculated sum of selected item prices -->
+                            <span id="cartTotalPrice" class="font-serif text-2xl font-bold text-studio-700">$0</span>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Action Buttons (Next / Back) -->
+                    <div class="mt-6 space-y-2">
+                        <!-- Main Forward Action Button -->
+                        <button id="nextBtn" onclick="nextStep()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm">
+                            <span>Continue</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+
+                        <!-- Back Button (Allows user to return to previous steps without losing selections) -->
+                        <button id="backBtn" onclick="prevStep()" class="w-full bg-studio-100 hover:bg-studio-200 text-stone-700 font-semibold py-2.5 px-4 rounded-xl transition-all hidden flex items-center justify-center gap-2 text-sm">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                            <span>Back</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- TAB 2: ABOUT ME, PORTFOLIO & REVIEWS VIEW -->
+    <main id="aboutView" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-       <h1 id="site-title" > Source e-learning Platform </h1> </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false">
-       <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class = "collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0"> 
-        <li class="nav-item"> 
-            <a class="nav-link active" aria-current="page" href="#"> Home</a>
-        </li>
-        
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active" href="about.html" id="navbarDropdown" role="button" data-bs-toggle = "dropdown" aria-expanded="false"> About</a>
-            <ul class="dropdown-menu" aria-labelledby = "navbarDropdown"> 
-            <li><a class="dropdown-item" href="about.html"> Pick Your Tutor</a>
-            </li>
-            <li><a class="dropdown-item" href="#"> Our Founder</a>
-            </li>
-            </ul>
-         <li class="nav-item">
-            <a class="nav-link" href="courses.html"> Courses</a>
+        <!-- TOP PROFILE CARD WITH EDITABLE AVATAR FOR BUSINESS -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-studio-200 flex flex-col md:flex-row items-center gap-6">
+            <!-- Profile Picture with upload trigger -->
+            <div class="relative group shrink-0">
+                <img id="mainProfilePic" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300" alt="Profile" class="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-4 border-studio-200 shadow-md">
+                <!-- Business upload overlay -->
+                <label for="profileUploadInput" class="absolute inset-0 rounded-full bg-stone-900/50 text-white opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer text-xs font-semibold">
+                    <i data-lucide="camera" class="w-6 h-6 mb-1"></i>
+                    <span>Update Photo</span>
+                </label>
+                <input type="file" id="profileUploadInput" accept="image/*" class="hidden" onchange="uploadProfilePicture(event)">
+            </div>
 
-        </li>
-         <li class="nav-item">
-            <a class="nav-link" href="bursary.html"> Bursaries</a>
+            <!-- Bio Details & Role -->
+            <div class="flex-1 text-center md:text-left space-y-2">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 justify-center md:justify-start">
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900">Nail tech | Nail Artist</h2>
+                    <span class="inline-block px-3 py-1 bg-blush-100 text-blush-500 rounded-full text-xs font-semibold self-center">Master Gel Tech</span>
+                </div>
+                <p class="text-sm text-stone-600 leading-relaxed max-w-2xl">
+                    Welcome to Berry Nails Studio! I specialize in clean structured gel overlays, durable Gel-X extensions, and custom hand-painted nail art. My focus is natural nail health, precision cuticle care, and giving you an aesthetic, relaxing experience.
+                </p>
 
-        </li>
-         <li class="nav-item">
-            <a class="nav-link" href="careers.html"> Careers </a>
+                <!-- Social and contact badges -->
+                <div class="pt-2 flex flex-wrap gap-3 justify-center md:justify-start text-xs text-stone-500 font-medium">
+                    <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-4 h-4 text-studio-600"></i> Studio Suite #104</span>
+                    <span class="flex items-center gap-1"><i data-lucide="instagram" class="w-4 h-4 text-studio-600"></i> @berrynails</span>
+                    <span class="flex items-center gap-1"><i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i> <strong class="text-stone-800">4.9</strong> (68 Reviews)</span>
+                </div>
+            </div>
 
-        </li>
-    </ul>
-       <form class = "d-flex">
-        <input class = "form-control me-2" type = "search" placeholder ="Search" aria-label = "Search">
-        <button class = "btn myinput btn-outline-success" type = "submit"> Search </button>
-       </form>
-   
-     </div>
-     </div>
-     </nav>
-   
+            <!-- Role Control Toggle: Switch between Customer and Business Admin -->
+            <div class="bg-studio-50 p-4 rounded-xl border border-studio-200 text-center shrink-0 w-full md:w-auto">
+                <p class="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Simulate Access Role</p>
+                <button id="roleToggleBtn" onclick="toggleRole()" class="w-full px-4 py-2 rounded-xl bg-stone-900 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <span id="roleLabelText">Viewing as: Customer</span>
+                </button>
+                <p id="roleSubtext" class="text-[11px] text-stone-400 mt-1">Can edit/delete only own reviews</p>
+            </div>
+        </div>
 
- 
-        
-   
-         <!-- Need to add tabs -->
-        <!--<img src="Source.JPG"/>-->
+        <!-- PORTFOLIO GALLERY SECTION -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-studio-200">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="font-serif text-xl font-semibold text-stone-900">Studio Work Portfolio</h3>
+                    <p class="text-xs text-stone-500 mt-1">Recent sets crafted by Nail tech in studio.</p>
+                </div>
 
-         <!-- ./ used if theyre not in the same directory , so it is referencing the current path -->
+                <!-- Portfolio Image Upload Button (Visible to Business Admin or when uploading samples) -->
+                <div class="flex items-center gap-2">
+                    <label for="portfolioUploadInput" class="px-4 py-2 rounded-xl bg-studio-600 hover:bg-studio-700 text-white text-xs font-semibold cursor-pointer transition-all flex items-center gap-2 shadow-sm">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Upload Portfolio Photo</span>
+                    </label>
+                    <input type="file" id="portfolioUploadInput" accept="image/*" multiple class="hidden" onchange="uploadPortfolioPhotos(event)">
+                </div>
+            </div>
 
-     
+            <!-- Portfolio Grid Container -->
+            <div id="portfolioGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+
+        <!-- REVIEWS & TESTIMONIALS SECTION -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT: Submit New Review Form (4 Columns) -->
+            <div class="lg:col-span-4 bg-white rounded-2xl p-6 shadow-sm border border-studio-200 space-y-4">
+                <div>
+                    <h3 class="font-serif text-xl font-semibold text-stone-900">Leave a Review</h3>
+                    <p class="text-xs text-stone-500 mt-1">Share your experience with nail tech.</p>
+                </div>
+
+                <form id="reviewForm" onsubmit="submitReview(event)" class="space-y-4">
+                    <!-- Current User Display / Override Name -->
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Your Name *</label>
+                        <input type="text" id="reviewAuthor" required placeholder="e.g. Jane Doe" class="w-full px-4 py-2 rounded-xl border border-stone-200 text-xs outline-none focus:ring-2 focus:ring-studio-500">
+                    </div>
+
+                    <!-- Star Rating Picker -->
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Rating *</label>
+                        <div class="flex items-center gap-1 text-amber-400 cursor-pointer" id="starPicker">
+                            <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setStarRating(1)"></i>
+                            <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setStarRating(2)"></i>
+                            <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setStarRating(3)"></i>
+                            <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setStarRating(4)"></i>
+                            <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setStarRating(5)"></i>
+                        </div>
+                    </div>
+
+                    <!-- Review Text -->
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Your Feedback *</label>
+                        <textarea id="reviewComment" rows="4" required placeholder="Tell us about your nail service..." class="w-full px-4 py-2 rounded-xl border border-stone-200 text-xs outline-none focus:ring-2 focus:ring-studio-500"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-semibold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                        <span>Post Review</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- RIGHT: Reviews List (8 Columns) -->
+            <div class="lg:col-span-8 bg-white rounded-2xl p-6 shadow-sm border border-studio-200">
+                <div class="flex items-center justify-between pb-4 border-b border-studio-100 mb-6">
+                    <h3 class="font-serif text-xl font-semibold text-stone-900">Client Reviews</h3>
+                    <!-- Average Rating Pill -->
+                    <div class="flex items-center gap-2 bg-studio-50 px-3 py-1 rounded-full border border-studio-200 text-xs">
+                        <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
+                        <span id="avgRatingText" class="font-bold text-stone-900">5.0</span>
+                        <span class="text-stone-400">|</span>
+                        <span id="totalReviewsCountText" class="text-stone-600 font-medium">3 Reviews</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Reviews Cards Container -->
+                <div id="reviewsList" class="space-y-4">
+                    <!-- Injected dynamically via JS -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- TAB 3: N8N JS CODE NODE VIEWER (Contains backend JavaScript logic) -->
+    <main id="nodeView" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dark Code Block Window -->
+        <div class="bg-stone-900 rounded-2xl p-6 sm:p-8 text-stone-100 shadow-xl border border-stone-800">
+            <!-- Header for Code Block -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-800 pb-6 mb-6">
+                <div>
+                    <!-- Badge tag -->
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-studio-600/30 text-studio-300 border border-studio-500/30">n8n Workflow Code Node</span>
+                    <!-- Node Title -->
+                    <h2 class="font-serif text-2xl font-semibold mt-2 text-white">Google Calendar Free/Busy Slot Subtracter Logic</h2>
+                    <!-- Explanation -->
+                    <p class="text-xs text-stone-400 mt-1">Runs inside your n8n JavaScript Code node. Takes studio business hours, subtracts booked calendar events, and filters available start times based on requested duration.</p>
+                </div>
+                <!-- Copy button -->
+                <button onclick="copyCode()" class="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-xs font-semibold text-stone-200 border border-stone-700 transition-all flex items-center gap-2 shrink-0">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    <span id="copyBtnText">Copy JS Code</span>
+                </button>
+            </div>
+
+            <!-- Code snippet output formatted with line-by-line comments -->
+            <pre class="font-mono text-xs sm:text-sm text-amber-200/90 overflow-x-auto p-4 bg-stone-950 rounded-xl border border-stone-800 leading-relaxed custom-scrollbar"><code id="codeNodeBlock">
+// ============================================================================
+// N8N JAVASCRIPT CODE NODE: CALENDAR FREE/BUSY SLOT CALCULATION LOGIC
+// ============================================================================
+
+// 1. Extract requested appointment duration from incoming n8n item payload (defaulting to 120 mins if absent)
+const requestedDuration = $json.requestedDurationMinutes || 120; 
+
+// 2. Extract requested booking date string formatted as YYYY-MM-DD
+const targetDateStr = $json.targetDate || "2026-10-20";
+
+// 3. Extract existing busy calendar events array returned by the Google Calendar 'Get Events' node
+const busyEvents = $json.gcalBusyEvents || [
+  // Example array structure of existing appointments returned by Google Calendar:
+  { start: `${targetDateStr}T11:00:00`, end: `${targetDateStr}T12:30:00` },
+  { start: `${targetDateStr}T14:30:00`, end: `${targetDateStr}T15:30:00` }
+];
+
+// 4. Define Studio Operating Parameters
+const BUSINESS_START_HOUR = 9;  // Studio opens at 9:00 AM
+const BUSINESS_END_HOUR = 18;   // Studio closes at 6:00 PM (18:00)
+const SLOT_INTERVAL_MINS = 30; // Check start time candidates every 30 minutes
+
+// 5. Primary calculation function to compute open slots
+function calculateAvailableSlots() {
+  // Construct Date object for opening time on requested date
+  const dayStart = new Date(`${targetDateStr}T0${BUSINESS_START_HOUR}:00:00`);
   
-        <section id="online-course">
+  // Construct Date object for closing time on requested date
+  const dayEnd = new Date(`${targetDateStr}T${BUSINESS_END_HOUR}:00:00`);
+  
+  // Parse GCal ISO string dates into JavaScript Date instances for numeric comparison
+  const busyIntervals = busyEvents.map(e => ({
+    start: new Date(e.start), // Start timestamp of existing booking
+    end: new Date(e.end)       // End timestamp of existing booking
+  }));
 
-            <h2> <b> About Us </b> </h2> 
-            <div class="my-text">
-            <p>  Source elearning platform was created as a co-business under Source of origins. Source e-learning platoform offers a
-                 variety of course for skills development areas such as technology, Business and highschool students can also earn 
-                 credits followed by the Ministry of Education in Ontario, Canada. All though domestic and international fees vary 
-                 students have access to teacher's office hours through a web conference 
-                 platform of their choosing (ie; google meet,zoom) to study in Canada.
-            </p> 
-           </div>
+  // Initialize array to hold valid non-overlapping slot candidates
+  const validSlots = [];
+  
+  // Pointer initialized to studio opening time
+  let currentCandidate = new Date(dayStart);
 
-    
-          <h3> <b>Courses </b> </h3>
-           <subject> 
-           <div class="course-image" style="background:url(Source.JPG)"> </div> 
-           <br/>
-           <a href="">  <course> MCV4U0  </course> </a>
-           <p> Grade 12 calculus and vectors. Focuses on derivatives, limits and continuity  </p>
-                <br/><br/>
-                <button><a href="#"> Course Outline </a></button> 
-                <br/><br/>
-                <button> Add To Cart</button>
-                <br/> <br/>
-                <price> $100</price>
-            </subject>
-           
-           
-           
-           <subject>
-          <div class="course-image" style="background:url(Source.JPG)"> </div>  
-          <br/>
-           <a href="">  <course>  SPH4U0  </course> </a>
-           <p> Grade 12  Physics. Kinemtics, Dynamics, Electricity and Magnetism </p>
-                 <br/><br/>
-                 <button><a href="#"> Course Outline </a></button> 
-                <br/><br/>
-                <button> Add To Cart</button>
-                <br/> <br/>
-                <price> $100</price>
-           
-            </subject>
-    
-            <subject> 
-                <div class="course-image" style="background:url(Source.JPG)"> </div>
-                <br/>
-                   <a href="">  <course>  HZT4U0 </course> </a>
-                   <p> Grade 12 Philosophy. Focuses on Marxists and feminist theories </p>
-                        <br/><br/>
-                        <button><a href="#"> Course Outline </a></button> 
-                   <br/><br/>
-                   <button> Add To Cart</button>
-                   <br/> <br/>
-                   <price> $100</price>
-               </subject>
-             
-             
-           
-            <subject> 
-             <div class="course-image" style="background:url(Source.JPG)"> </div>
-             <br/>
-                <a href="">  <course> SCH4U0</course> </a>
-                <p> Grade 12 Philosophy. Focuses on Marxists and feminist theories </p>
-                     <br/><br/>
-                     <button><a href="#"> Course Outline </a></button> 
-                <br/><br/>
-                <button> Add To Cart</button>
-                <br/> <br/>
-                <price> $100</price>
-            </subject>
-            <subject>
-            <div class="course-image" style="background:url(Source.JPG)"> </div>
-            <br/>
-            <a href="">  <course> PSK4U0</course> </a>
-            <p> Grade 12 Philosophy. Focuses on Marxists and feminist theories </p>
-                 <br/><br/>
-                 <button><a href="#"> Course Outline </a></button> 
-            <br/><br/>
-            <button> Add To Cart</button>
-            <br/> <br/>
-            <price> $100</price>
-           </subject>
-           <subject>
-           <div class="course-image" style="background:url(Source.JPG)"> </div>
-           <br/>
-           <a href="">  <course> ENG4U0</course> </a>
-           <p> Grade 12 Philosophy. Focuses on Marxists and feminist theories </p>
-                <br/><br/>
-                <button><a href="#"> Course Outline </a></button> 
-           <br/><br/>
-           <button> Add To Cart</button>
-           <br/> <br/>
-           <price> $100</price>
-       </subject>
+  // Loop through operating hours in 30-minute steps
+  while (currentCandidate < dayEnd) {
+    // Calculate required finish time by adding requested appointment duration (in milliseconds)
+    const candidateEnd = new Date(currentCandidate.getTime() + requestedDuration * 60000);
+
+    // Rule A: Skip candidate if appointment extends past studio closing time
+    if (candidateEnd > dayEnd) {
+      // Step forward by 30-minute interval
+      currentCandidate = new Date(currentCandidate.getTime() + SLOT_INTERVAL_MINS * 60000);
+      continue; // Skip to next candidate
+    }
+
+    // Rule B: Check if candidate window overlaps with ANY booked calendar event
+    const hasOverlap = busyIntervals.some(busy => {
+      // Standard time-range overlap formula: (StartA < EndB) AND (EndA > StartB)
+      return currentCandidate < busy.end && candidateEnd > busy.start;
+    });
+
+    // Rule C: If no conflict detected, record this valid start slot
+    if (!hasOverlap) {
+      validSlots.push({
+        // Format readable time string for client UI (e.g., "10:00 AM")
+        formattedTime: currentCandidate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        // Provide exact ISO timestamps for Google Calendar event creation node
+        isoStart: currentCandidate.toISOString(),
+        isoEnd: candidateEnd.toISOString()
+      });
+    }
+
+    // Step forward by interval (30 mins) to check next start time slot candidate
+    currentCandidate = new Date(currentCandidate.getTime() + SLOT_INTERVAL_MINS * 60000);
+  }
+
+  // Return final list of valid appointment start times
+  return validSlots;
+}
+
+// 6. Return structured data object for n8n workflow execution pipeline
+return [{
+  json: {
+    status: "success",                           // Operation status
+    targetDate: targetDateStr,                  // Booking date
+    totalDurationMinutes: requestedDuration,    // Appointment length
+    availableSlotsCount: calculateAvailableSlots().length, // Total available options
+    availableSlots: calculateAvailableSlots()   // Array of open time slots
+  }
+}];
+            </code></pre>
+        </div>
+    </main>
+
+    <!-- SUCCESS MODAL POPUP (Displayed after successful booking submission) -->
+    <div id="successModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <!-- Modal Card Container -->
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-2xl border border-studio-100 transform transition-all">
+            <!-- Green success badge icon -->
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check-circle" class="w-10 h-10"></i>
+            </div>
+            <!-- Heading -->
+            <h3 class="font-serif text-2xl font-bold text-stone-900">Booking Confirmed!</h3>
+            <p class="text-xs text-stone-500 mt-2">Your appointment has been locked into yout nail tech's calendar. A calendar invite & confirmation message have been sent.</p>
+
+            <!-- Summary Breakdown Box inside Modal -->
+            <div class="bg-studio-50 rounded-xl p-4 my-6 text-left space-y-2 border border-studio-200/60 text-xs">
+                <!-- Client Name Row -->
+                <div class="flex justify-between">
+                    <span class="text-stone-500">Client:</span>
+                    <span id="modalClientName" class="font-semibold text-stone-800">-</span>
+                </div>
+                <!-- Date & Time Row -->
+                <div class="flex justify-between">
+                    <span class="text-stone-500">Date & Time:</span>
+                    <span id="modalDateTime" class="font-semibold text-stone-800">-</span>
+                </div>
+                <!-- Total Calculated Duration Row -->
+                <div class="flex justify-between">
+                    <span class="text-stone-500">Total Duration:</span>
+                    <span id="modalDuration" class="font-semibold text-stone-800">-</span>
+                </div>
+                <!-- Total Investment Row -->
+                <div class="flex justify-between border-t border-studio-200/60 pt-2 text-stone-900 font-bold">
+                    <span>Total Amount:</span>
+                    <span id="modalPrice" class="text-studio-700">-</span>
+                </div>
+            </div>
+
+            <!-- Button to close modal and reset app for another booking -->
+            <button onclick="resetBookingApp()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-semibold py-3 rounded-xl transition-all text-sm">
+                Book Another Appointment
+            </button>
+        </div>
+    </div>
+
+    <!-- EDIT REVIEW MODAL POPUP -->
+    <div id="editReviewModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-studio-100">
+            <h3 class="font-serif text-xl font-bold text-stone-900 mb-4">Edit Your Review</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Rating</label>
+                    <div class="flex items-center gap-1 text-amber-400 cursor-pointer" id="editStarPicker">
+                        <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setEditStarRating(1)"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setEditStarRating(2)"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setEditStarRating(3)"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setEditStarRating(4)"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-amber-400 stroke-amber-400" onclick="setEditStarRating(5)"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Comment</label>
+                    <textarea id="editReviewComment" rows="4" class="w-full px-4 py-2 rounded-xl border border-stone-200 text-xs outline-none focus:ring-2 focus:ring-studio-500"></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-6">
+                <button onclick="closeEditModal()" class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold py-2.5 rounded-xl text-xs transition-all">Cancel</button>
+                <button onclick="saveReviewEdit()" class="flex-1 bg-stone-900 hover:bg-stone-800 text-white font-semibold py-2.5 rounded-xl text-xs transition-all">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC BLOCK -->
+    <script>
+        // ============================================================================
+        // GLOBAL DATA DEFINITIONS & APPLICATION STATE
+        // ============================================================================
         
-          
-              
-          
+        // Full list of studio services, pricing, durations, and category tags
+        const SERVICES = [
+            { id: 's1', name: 'Gel X short', duration: 120, tech: ' ', price: 40, category: 'extensions' },
+            { id: 's2', name: 'Gel X medium', duration: 120, tech: ' ', price: 45, category: 'extensions' },
+            { id: 's3', name: 'Gel x long', duration: 120, tech: ' ', price: 50, category: 'extensions' },
+            { id: 's4', name: 'Gel Overlay', duration: 120, tech: ' ', price: 35, category: 'overlay' },
+            { id: 's5', name: 'Gel Overlay Refill', duration: 90, tech: ' ', price: 20, category: 'overlay' },
+            { id: 's6', name: 'Gel X refill', duration: 90, tech: ' ', price: 30, category: 'overlay' },
+            { id: 's7', name: 'Shellac manicure', duration: 90, tech: ' ', price: 30, category: 'overlay' },
+            { id: 's8', name: 'Dry pedicure', duration: 60, tech: ' ', price: 30, category: 'care' },
+            { id: 's9', name: 'Removal / soak off', duration: 60, tech: ' ', price: 10, category: 'care' },
+            { id: 's10', name: 'Tier 1 designs', duration: 30, tech: ' ', price: 5, category: 'art' },
+            { id: 's11', name: 'Tier 2 designs', duration: 60, tech: '  ', price: 10, category: 'art' },
+            { id: 's12', name: 'Tier 3 designs', duration: 100, tech: ' ', price: 15, category: 'art' },
+            { id: 's13', name: 'Silent appointment', duration: 0, tech: ' ', price: 0, category: 'care' },
+            { id: 's14', name: 'Guest request', duration: 0, tech: ' ', price: 0, category: 'care' }
+        ];
 
-        </section> 
+        // Current active state variables
+        let selectedServiceIds = new Set();
+        let selectedDate = null;
+        let selectedSlot = null;
+        let currentStep = 1;
+        let activeNewRating = 5;
+        let activeEditRating = 5;
+        let activeEditingReviewId = null;
+
+        // Active user identity details
+        let currentUser = {
+            id: 'usr_' + Math.floor(1000 + Math.random() * 9000),
+            name: 'Jane Doe',
+            isAdmin: false
+        };
+
+        // Initial reviews sample data
+        let reviewsData = [
+            {
+                id: 'rev_1',
+                userId: 'usr_9999',
+                author: 'Sophia Martinez',
+                rating: 5,
+                comment: ' is absolute perfection! My Gel-X set lasted over 4 weeks with zero lifting. Her attention to detail on cuticles is unmatched.',
+                date: '2 days ago'
+            },
+            {
+                id: 'rev_2',
+                userId: 'usr_8888',
+                author: 'Chloe Bennet',
+                rating: 5,
+                comment: 'The Tier 2 art came out even better than my Pinterest reference! Super clean studio and zero stress.',
+                date: '1 week ago'
+            }
+        ];
+
+        // Initial portfolio sample items
+        let portfolioItems = [
+            { id: 1, url: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=400', title: 'French Chrome Gel-X' },
+            { id: 2, url: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&q=80&w=400', title: 'Structured Overlay' },
+            { id: 3, url: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&q=80&w=400', title: 'Tier 3 Floral Art' },
+            { id: 4, url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=400', title: 'Velvet Cat Eye' }
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('reviewAuthor').value = currentUser.name;
+            renderServices('all');
+            generateDateStrip();
+            renderReviews();
+            renderPortfolio();
+            updateStepUI();
+            updateCartSummary();
+        });
+
+        // Toggle user role view between Customer and Admin
+        function toggleRole() {
+            currentUser.isAdmin = !currentUser.isAdmin;
+            const label = document.getElementById('roleLabelText');
+            const subtext = document.getElementById('roleSubtext');
+            const btn = document.getElementById('roleToggleBtn');
+
+            if (currentUser.isAdmin) {
+                label.textContent = "Viewing as: Studio Admin";
+                subtext.textContent = "Full privileges: Can delete any review & photo";
+                btn.className = "w-full px-4 py-2 rounded-xl bg-amber-600 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 shadow-sm";
+            } else {
+                label.textContent = "Viewing as: Customer";
+                subtext.textContent = "Can edit/delete only own reviews";
+                btn.className = "w-full px-4 py-2 rounded-xl bg-stone-900 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 shadow-sm";
+            }
+            renderReviews();
+            renderPortfolio();
+        }
+
+        // View Tab switcher
+        function switchMainTab(tab) {
+            document.getElementById('mainAppView').classList.toggle('hidden', tab !== 'app');
+            document.getElementById('aboutView').classList.toggle('hidden', tab !== 'about');
+            document.getElementById('nodeView').classList.toggle('hidden', tab !== 'node');
+
+            const tabAppBtn = document.getElementById('tabAppBtn');
+            const tabAboutBtn = document.getElementById('tabAboutBtn');
+            const tabNodeBtn = document.getElementById('tabNodeBtn');
+
+            tabAppBtn.className = tab === 'app' 
+                ? "px-3.5 py-2 rounded-lg bg-white shadow-sm text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                : "px-3.5 py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap";
+
+            tabAboutBtn.className = tab === 'about'
+                ? "px-3.5 py-2 rounded-lg bg-white shadow-sm text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                : "px-3.5 py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap";
+
+            tabNodeBtn.className = tab === 'node'
+                ? "px-3.5 py-2 rounded-lg bg-white shadow-sm text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                : "px-3.5 py-2 rounded-lg text-stone-600 hover:text-stone-900 transition-all flex items-center gap-1.5 whitespace-nowrap";
+        }
+
+        function uploadProfilePicture(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('headerProfilePic').src = e.target.result;
+                    document.getElementById('mainProfilePic').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ============================================================================
+        // REAL-TIME INPUT VALIDATION FUNCTIONS (PHONE & EMAIL FORMAT CHECKING)
+        // ============================================================================
         
-        <br/><br/>
-        
-        <br/><br/>
-        
-        <br/><br/> 
+        // Regex patterns for standard phone and email formats
+        const PHONE_REGEX = /^(\+?\d{1,3}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}$/;
+        const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-       
+        function validatePhoneInput() {
+            const input = document.getElementById('custPhone');
+            const errorMsg = document.getElementById('phoneErrorMsg');
+            const val = input.value.trim();
 
-<hr>
+            if (!val) {
+                // Empty value handled by standard HTML 'required' or reset styling
+                input.className = "w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:ring-2 focus:ring-studio-500 focus:border-transparent outline-none text-sm transition-colors";
+                errorMsg.classList.add('hidden');
+                return false;
+            }
 
+            const isValid = PHONE_REGEX.test(val);
+            if (!isValid) {
+                // Highlight input field red with error message
+                input.className = "w-full px-4 py-2.5 rounded-xl border-2 border-rose-500 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-400 outline-none text-sm transition-colors";
+                errorMsg.classList.remove('hidden');
+                lucide.createIcons();
+                return false;
+            } else {
+                // Highlight input field green/emerald when valid
+                input.className = "w-full px-4 py-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/30 text-stone-900 focus:ring-2 focus:ring-emerald-400 outline-none text-sm transition-colors";
+                errorMsg.classList.add('hidden');
+                return true;
+            }
+        }
 
-         <footer> 
-        &copy; Source of Origins Copyright 2024  <br>
-        <a href="#"> Terms of Service</a>
-    
-         </footer>
-     
+        function validateEmailInput() {
+            const input = document.getElementById('custEmail');
+            const errorMsg = document.getElementById('emailErrorMsg');
+            const val = input.value.trim();
 
+            // Email is optional; if empty, consider valid unless user starts typing
+            if (!val) {
+                input.className = "w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:ring-2 focus:ring-studio-500 focus:border-transparent outline-none text-sm transition-colors";
+                errorMsg.classList.add('hidden');
+                return true;
+            }
 
- <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
-<script src="https://code.jquery.com/jquery-migrate-3.5.0.min.js"></script>
+            const isValid = EMAIL_REGEX.test(val);
+            if (!isValid) {
+                // Highlight input field red with error message
+                input.className = "w-full px-4 py-2.5 rounded-xl border-2 border-rose-500 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-400 outline-none text-sm transition-colors";
+                errorMsg.classList.remove('hidden');
+                lucide.createIcons();
+                return false;
+            } else {
+                // Highlight input field green/emerald when valid
+                input.className = "w-full px-4 py-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/30 text-stone-900 focus:ring-2 focus:ring-emerald-400 outline-none text-sm transition-colors";
+                errorMsg.classList.add('hidden');
+                return true;
+            }
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"  crossorigin="anonymous"> </script>
+        function uploadPortfolioPhotos(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    portfolioItems.unshift({
+                        id: Date.now() + Math.random(),
+                        url: e.target.result,
+                        title: 'Studio Design'
+                    });
+                    renderPortfolio();
+                }
+                reader.readAsDataURL(file);
+            });
+        }
 
+        function deletePortfolioPhoto(id) {
+            portfolioItems = portfolioItems.filter(item => item.id !== id);
+            renderPortfolio();
+        }
+
+        function renderPortfolio() {
+            const grid = document.getElementById('portfolioGrid');
+            grid.innerHTML = '';
+
+            if (portfolioItems.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center py-6 text-xs text-stone-400">No portfolio photos uploaded yet.</p>`;
+                return;
+            }
+
+            portfolioItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "relative group rounded-xl overflow-hidden shadow-sm aspect-square bg-stone-100 border border-stone-200";
+                card.innerHTML = `
+                    <img src="${item.url}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <div class="absolute inset-0 bg-stone-900/40 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between text-white">
+                        <span class="text-[11px] font-semibold">${item.title}</span>
+                        ${currentUser.isAdmin ? `
+                            <button onclick="deletePortfolioPhoto(${item.id})" class="self-end bg-rose-500 hover:bg-rose-600 text-white p-1.5 rounded-lg text-xs transition-colors shadow">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // Star selection handler for new review form
+        function setStarRating(rating) {
+            activeNewRating = rating;
+            const stars = document.getElementById('starPicker').children;
+            for (let i = 0; i < 5; i++) {
+                if (i < rating) {
+                    stars[i].className = "w-6 h-6 fill-amber-400 stroke-amber-400";
+                } else {
+                    stars[i].className = "w-6 h-6 fill-transparent stroke-amber-300";
+                }
+            }
+        }
+
+        // Star selection handler for edit review modal
+        function setEditStarRating(rating) {
+            activeEditRating = rating;
+            const stars = document.getElementById('editStarPicker').children;
+            for (let i = 0; i < 5; i++) {
+                if (i < rating) {
+                    stars[i].className = "w-6 h-6 fill-amber-400 stroke-amber-400";
+                } else {
+                    stars[i].className = "w-6 h-6 fill-transparent stroke-amber-300";
+                }
+            }
+        }
+
+        function submitReview(event) {
+            event.preventDefault();
+            const author = document.getElementById('reviewAuthor').value.trim();
+            const comment = document.getElementById('reviewComment').value.trim();
+
+            if (!author || !comment) return;
+
+            const newReview = {
+                id: 'rev_' + Date.now(),
+                userId: currentUser.id, // Associated with active user ID
+                author: author,
+                rating: activeNewRating,
+                comment: comment,
+                date: 'Just now'
+            };
+
+            reviewsData.unshift(newReview);
+            document.getElementById('reviewComment').value = '';
+            renderReviews();
+        }
+
+        function renderReviews() {
+            const list = document.getElementById('reviewsList');
+            const avgText = document.getElementById('avgRatingText');
+            const totalText = document.getElementById('totalReviewsCountText');
+            list.innerHTML = '';
+
+            if (reviewsData.length === 0) {
+                list.innerHTML = `<p class="text-center py-8 text-xs text-stone-400">No reviews yet. Be the first to leave one!</p>`;
+                avgText.textContent = '0.0';
+                totalText.textContent = '0 Reviews';
+                return;
+            }
+
+            // Calculate average
+            const sum = reviewsData.reduce((acc, r) => acc + r.rating, 0);
+            const avg = (sum / reviewsData.length).toFixed(1);
+            avgText.textContent = avg;
+            totalText.textContent = `${reviewsData.length} ${reviewsData.length === 1 ? 'Review' : 'Reviews'}`;
+
+            reviewsData.forEach(review => {
+                // Permission checks:
+                // Is this review posted by the current user?
+                const isOwner = review.userId === currentUser.id;
+                // Can user edit? Only if they are the original owner
+                const canEdit = isOwner;
+                // Can user delete? If they are the original owner OR if business admin mode is active
+                const canDelete = isOwner || currentUser.isAdmin;
+
+                const card = document.createElement('div');
+                card.className = "p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-2 relative";
+
+                // Generate star rating icons string
+                let starIconsHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= review.rating) {
+                        starIconsHTML += `<i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 stroke-amber-400 inline"></i>`;
+                    } else {
+                        starIconsHTML += `<i data-lucide="star" class="w-3.5 h-3.5 fill-transparent stroke-amber-300 inline"></i>`;
+                    }
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-semibold text-stone-900 text-sm">${review.author}</h4>
+                                ${isOwner ? '<span class="text-[10px] bg-studio-200 text-studio-800 px-2 py-0.5 rounded font-medium">You</span>' : ''}
+                            </div>
+                            <div class="flex items-center gap-1 mt-0.5">${starIconsHTML}</div>
+                        </div>
+                        <span class="text-[11px] text-stone-400">${review.date}</span>
+                    </div>
+                    <p class="text-xs text-stone-600 leading-relaxed">${review.comment}</p>
+
+                    <!-- Action buttons if permitted -->
+                    ${(canEdit || canDelete) ? `
+                        <div class="flex justify-end gap-2 pt-2 border-t border-stone-200/60 text-[11px]">
+                            ${canEdit ? `
+                                <button onclick="openEditModal('${review.id}')" class="text-studio-600 hover:text-studio-800 font-semibold flex items-center gap-1">
+                                    <i data-lucide="edit-3" class="w-3 h-3"></i> Edit
+                                </button>
+                            ` : ''}
+                            ${canDelete ? `
+                                <button onclick="deleteReview('${review.id}')" class="text-rose-500 hover:text-rose-700 font-semibold flex items-center gap-1">
+                                    <i data-lucide="trash-2" class="w-3 h-3"></i> Delete ${currentUser.isAdmin && !isOwner ? '(Admin)' : ''}
+                                </button>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                `;
+                list.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function deleteReview(id) {
+            reviewsData = reviewsData.filter(r => r.id !== id);
+            renderReviews();
+        }
+
+        function openEditModal(id) {
+            const review = reviewsData.find(r => r.id === id);
+            if (!review) return;
+
+            activeEditingReviewId = id;
+            document.getElementById('editReviewComment').value = review.comment;
+            setEditStarRating(review.rating);
+            document.getElementById('editReviewModal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editReviewModal').classList.add('hidden');
+            activeEditingReviewId = null;
+        }
+
+        function saveReviewEdit() {
+            if (!activeEditingReviewId) return;
+            const review = reviewsData.find(r => r.id === activeEditingReviewId);
+            if (review) {
+                review.comment = document.getElementById('editReviewComment').value.trim();
+                review.rating = activeEditRating;
+                review.date = 'Edited just now';
+            }
+            closeEditModal();
+            renderReviews();
+        }
+
+        // ============================================================================
+        // 6. MULTI-STEP NAVIGATION FUNCTIONS
+        // Allows forward and backward movement without losing selected choices
+        // ============================================================================
+        function goToStep(step) {
+            // Prevent forward jump if current step validation fails
+            if (step > currentStep && !validateStep(currentStep)) return;
+            
+            currentStep = step; // Set current step state
+            updateStepUI();     // Update DOM visibility
+        }
+
+        function nextStep() {
+            // Validate current step before proceeding
+            if (!validateStep(currentStep)) return;
+            
+            if (currentStep < 3) {
+                currentStep++;    // Increment step number
+                updateStepUI();   // Refresh UI views
+            } else {
+                // If on final step, submit form payload
+                document.getElementById('bookingForm').requestSubmit();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;    // Decrement step number
+                updateStepUI();   // Refresh UI views
+            }
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                // Ensure at least 1 service is picked before advancing to step 2
+                if (selectedServiceIds.size === 0) {
+                    alert("Please select at least one service to continue.");
+                    return false;
+                }
+            } else if (step === 2) {
+                // Ensure a time slot is chosen before advancing to step 3
+                if (!selectedSlot) {
+                    alert("Please select an available appointment time slot.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function updateStepUI() {
+            // Toggle visibility of step content panels based on currentStep integer
+            document.getElementById('step1Content').classList.toggle('hidden', currentStep !== 1);
+            document.getElementById('step2Content').classList.toggle('hidden', currentStep !== 2);
+            document.getElementById('step3Content').classList.toggle('hidden', currentStep !== 3);
+
+            // Compute percentage width for progress indicator bar
+            const progress = ((currentStep - 1) / 2) * 100;
+            document.getElementById('progressLine').style.width = `${progress}%`;
+
+            // Update top progress dot numbers and label styling
+            for (let i = 1; i <= 3; i++) {
+                const circle = document.getElementById(`stepCircle${i}`);
+                const label = document.getElementById(`stepLabel${i}`);
+
+                if (i <= currentStep) {
+                    // Active or completed step styling
+                    circle.className = "w-10 h-10 rounded-full bg-studio-600 text-white flex items-center justify-center font-semibold text-sm transition-all duration-300 ring-4 ring-studio-50 shadow-md";
+                    label.className = "text-xs font-semibold text-studio-700";
+                } else {
+                    // Upcoming step styling
+                    circle.className = "w-10 h-10 rounded-full bg-white border-2 border-studio-300 text-stone-500 flex items-center justify-center font-semibold text-sm transition-all duration-300 ring-4 ring-studio-50";
+                    label.className = "text-xs font-medium text-stone-400";
+                }
+            }
+
+            // Update Next & Back button labels depending on active step
+            const nextBtn = document.getElementById('nextBtn');
+            const backBtn = document.getElementById('backBtn');
+
+            // Hide back button on first step
+            backBtn.classList.toggle('hidden', currentStep === 1);
+
+            if (currentStep === 1) {
+                nextBtn.innerHTML = `<span>Continue to Slot Picker</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+            } else if (currentStep === 2) {
+                nextBtn.innerHTML = `<span>Enter Details</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                generateSlots(); // Re-calculate available slots for selected date & total duration
+            } else {
+                nextBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i><span>Confirm & Lock Booking</span>`;
+            }
+            lucide.createIcons(); // Re-render Lucide icons
+        }
+
+        // ============================================================================
+        // 7. SERVICES RENDERING & SELECTION LOGIC
+        // ============================================================================
+        function renderServices(filter) {
+            const container = document.getElementById('servicesList');
+            container.innerHTML = ''; // Clear container
+
+            // Loop through all defined services in catalog
+            SERVICES.forEach(service => {
+                // Filter out non-matching items if a category filter is active
+                if (filter !== 'all' && service.category !== filter) return;
+
+                const isSelected = selectedServiceIds.has(service.id); // Check selection status
+                const card = document.createElement('div');
+                
+                // Set interactive styling classes based on selection state
+                card.className = `p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                    isSelected 
+                    ? 'border-studio-600 bg-studio-50/80 ring-2 ring-studio-600/20 shadow-sm' 
+                    : 'border-stone-200 bg-white hover:border-studio-300 hover:shadow-sm'
+                }`;
+                // Toggle selection on click
+                card.onclick = () => toggleService(service.id);
+
+                // Inject card HTML
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h4 class="font-semibold text-stone-900 text-sm">${service.name}</h4>
+                            <p class="text-xs text-stone-500 mt-0.5">${formatMinutes(service.duration)} · with ${service.tech}</p>
+                        </div>
+                        <div class="w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                            isSelected ? 'border-studio-600 bg-studio-600 text-white' : 'border-stone-300'
+                        }">
+                            ${isSelected ? '<i data-lucide="check" class="w-3.5 h-3.5"></i>' : ''}
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between pt-2 border-t border-stone-100">
+                        <span class="text-xs text-stone-400 font-medium">Price</span>
+                        <span class="font-bold text-stone-900 text-sm">${service.price === 0 ? 'Free' : '$' + service.price}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterCategory(cat) {
+            // Highlight active category tab
+            document.querySelectorAll('.cat-tab').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = "cat-tab px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-900 text-white whitespace-nowrap transition-all";
+                } else {
+                    btn.className = "cat-tab px-4 py-1.5 rounded-full text-xs font-medium bg-studio-100 text-stone-600 hover:bg-studio-200 whitespace-nowrap transition-all";
+                }
+            });
+            renderServices(cat); // Re-render grid for filtered category
+        }
+
+        function toggleService(id) {
+            // Add or remove service ID from active set
+            if (selectedServiceIds.has(id)) {
+                selectedServiceIds.delete(id);
+            } else {
+                selectedServiceIds.add(id);
+            }
+            // Re-render services grid and update live cart calculations
+            renderServices(document.querySelector('.cat-tab.bg-stone-900').dataset.cat);
+            updateCartSummary();
+        }
+
+        // ============================================================================
+        // 8. LIVE TALLY CALCULATIONS (PRICE & DURATION SUMMING)
+        // ============================================================================
+        function updateCartSummary() {
+            // Get DOM element references
+            const itemsContainer = document.getElementById('cartItemsList');
+            const totalTimeEl = document.getElementById('cartTotalTime');
+            const totalPriceEl = document.getElementById('cartTotalPrice');
+            const countBadge = document.getElementById('serviceCountBadge');
+            const slotDurationBadge = document.getElementById('slotDurationBadge');
+
+            // Handle empty cart state
+            if (selectedServiceIds.size === 0) {
+                itemsContainer.innerHTML = `<div class="text-center py-8 text-stone-400 text-xs">No services selected yet.</div>`;
+                totalTimeEl.textContent = '0 mins';
+                totalPriceEl.textContent = '$0';
+                countBadge.textContent = '0 Items';
+                slotDurationBadge.textContent = '0 mins';
+                return;
+            }
+
+            let totalMinutes = 0; // Cumulative duration accumulator
+            let totalPrice = 0;   // Cumulative price accumulator
+            itemsContainer.innerHTML = ''; // Clear cart list container
+
+            // Iterate over all selected service IDs to calculate totals
+            selectedServiceIds.forEach(id => {
+                const service = SERVICES.find(s => s.id === id);
+                if (service) {
+                    totalMinutes += service.duration; // Add service time
+                    totalPrice += service.price;       // Add service cost
+
+                    // Create line item row inside cart summary
+                    const itemRow = document.createElement('div');
+                    itemRow.className = "flex items-center justify-between text-xs py-1.5 group";
+                    itemRow.innerHTML = `
+                        <div class="pr-2">
+                            <p class="font-semibold text-stone-800 line-clamp-1">${service.name}</p>
+                            <p class="text-stone-400 text-[10px]">${formatMinutes(service.duration)}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium text-stone-900">${service.price === 0 ? 'Free' : '$' + service.price}</span>
+                            <button onclick="event.stopPropagation(); toggleService('${service.id}')" class="text-stone-400 hover:text-rose-500 opacity-80 transition-opacity">
+                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    `;
+                    itemsContainer.appendChild(itemRow);
+                }
+            });
+
+            // Update DOM text with formatted output totals
+            totalTimeEl.textContent = formatMinutes(totalMinutes);
+            totalPriceEl.textContent = `$${totalPrice}`;
+            countBadge.textContent = `${selectedServiceIds.size} ${selectedServiceIds.size === 1 ? 'Item' : 'Items'}`;
+            slotDurationBadge.textContent = formatMinutes(totalMinutes);
+
+            lucide.createIcons();
+        }
+
+        // Helper function: Formats minutes integer into human-readable format (e.g. 150 mins -> 2 hrs 30 mins)
+        function formatMinutes(mins) {
+            if (mins < 60) return `${mins} mins`;
+            const hours = Math.floor(mins / 60);
+            const remainingMins = mins % 60;
+            return remainingMins === 0 ? `${hours} hr${hours > 1 ? 's' : ''}` : `${hours} hr${hours > 1 ? 's' : ''} ${remainingMins} mins`;
+        }
+
+        // ============================================================================
+        // 9. DATE & AVAILABLE TIME SLOT ALIGNMENT GENERATOR
+        // Fits user's total calculated duration into business schedule non-conflicting windows
+        // ============================================================================
+        function generateDateStrip() {
+            const strip = document.getElementById('dateStrip');
+            strip.innerHTML = '';
+
+            const today = new Date();
+            // Generate next 7 consecutive dates
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+
+                const dateStr = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                const dayName = i === 0 ? 'Today' : date.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayNum = date.getDate();
+                const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+
+                if (!selectedDate && i === 0) selectedDate = dateStr; // Default to today
+
+                const isSelected = selectedDate === dateStr;
+                const btn = document.createElement('button');
+                btn.className = `flex-1 min-w-[70px] p-3 rounded-xl border text-center transition-all ${
+                    isSelected
+                    ? 'border-studio-600 bg-studio-600 text-white shadow-sm'
+                    : 'border-stone-200 bg-white hover:border-studio-300 text-stone-700'
+                }`;
+                btn.onclick = () => {
+                    selectedDate = dateStr;
+                    document.getElementById('selectedDateText').textContent = `${dayName}, ${monthName} ${dayNum}`;
+                    generateDateStrip();
+                    generateSlots();
+                };
+
+                btn.innerHTML = `
+                    <p class="text-[10px] font-semibold uppercase tracking-wider ${isSelected ? 'text-studio-100' : 'text-stone-400'}">${dayName}</p>
+                    <p class="font-serif text-lg font-bold my-0.5">${dayNum}</p>
+                    <p class="text-[10px] ${isSelected ? 'text-studio-100' : 'text-stone-500'}">${monthName}</p>
+                `;
+                strip.appendChild(btn);
+            }
+        }
+
+        function generateSlots() {
+            const container = document.getElementById('slotsContainer');
+            const warning = document.getElementById('noSlotsWarning');
+            container.innerHTML = ''; // Clear slots container
+
+            // Sum up total duration of all selected services
+            let totalMins = 0;
+            selectedServiceIds.forEach(id => {
+                const s = SERVICES.find(x => x.id === id);
+                if (s) totalMins += s.duration;
+            });
+
+            // Operating Parameters (9:00 AM to 6:00 PM)
+            const openHour = 9;
+            const closeHour = 18;
+            
+            // Simulated calendar busy blocks for  (e.g. 12:00-13:30 lunch/appointment, 15:30-16:30 appointment)
+            const busyIntervals = [
+                { start: 12.0, end: 13.5 }, // 12:00 PM - 1:30 PM
+                { start: 15.5, end: 16.5 }  // 3:30 PM - 4:30 PM
+            ];
+
+            let validSlotsCount = 0;
+
+            // Step through operating hours in 30-minute intervals (0.5 hour increments)
+            for (let hour = openHour; hour < closeHour; hour += 0.5) {
+                const slotStartMins = hour * 60;
+                const slotEndMins = slotStartMins + totalMins;
+                const closeMins = closeHour * 60;
+
+                // Condition 1: Entire appointment must complete before studio closing time
+                if (slotEndMins > closeMins) continue;
+
+                // Condition 2: Overlap check against existing calendar bookings
+                const slotStartHourDecimal = hour;
+                const slotEndHourDecimal = slotEndMins / 60;
+
+                const hasConflict = busyIntervals.some(busy => {
+                    return slotStartHourDecimal < busy.end && slotEndHourDecimal > busy.start;
+                });
+
+                // If candidate slot is free, render button option
+                if (!hasConflict) {
+                    validSlotsCount++;
+                    const timeString = formatDecimalTime(hour);
+                    const isSelected = selectedSlot === timeString;
+
+                    const slotBtn = document.createElement('button');
+                    slotBtn.className = `p-3 rounded-xl border text-center transition-all text-xs font-semibold ${
+                        isSelected 
+                        ? 'border-stone-900 bg-stone-900 text-white shadow-md' 
+                        : 'border-stone-200 bg-white hover:border-studio-400 text-stone-800 hover:bg-studio-50'
+                    }`;
+                    slotBtn.onclick = () => selectSlot(timeString);
+                    slotBtn.innerHTML = `
+                        <div class="flex items-center justify-center gap-1.5">
+                            <i data-lucide="clock" class="w-3.5 h-3.5 ${isSelected ? 'text-studio-300' : 'text-studio-600'}"></i>
+                            <span>${timeString}</span>
+                        </div>
+                    `;
+                    container.appendChild(slotBtn);
+                }
+            }
+
+            // Display warning message if no slot fits total requested time block
+            if (validSlotsCount === 0) {
+                warning.classList.remove('hidden');
+            } else {
+                warning.classList.add('hidden');
+            }
+
+            lucide.createIcons();
+        }
+
+        // Helper function: Converts decimal hour into formatted 12-hour AM/PM string (e.g. 14.5 -> "2:30 PM")
+        function formatDecimalTime(decimal) {
+            const hrs = Math.floor(decimal);
+            const mins = (decimal % 1) * 60;
+            const period = hrs >= 12 ? 'PM' : 'AM';
+            const displayHrs = hrs > 12 ? hrs - 12 : (hrs === 0 ? 12 : hrs);
+            const displayMins = mins === 0 ? '00' : mins;
+            return `${displayHrs}:${displayMins} ${period}`;
+        }
+
+        function selectSlot(timeStr) {
+            selectedSlot = timeStr; // Set active time slot selection
+            generateSlots();        // Re-render slots to highlight selected button
+
+            // Sum up total duration of all selected services
+            let totalMins = 0;
+            selectedServiceIds.forEach(id => {
+                const s = SERVICES.find(x => x.id === id);
+                if (s) totalMins += s.duration;
+            });
+
+            // Calculate start and end times
+            const endTimeStr = calculateEndTime(timeStr, totalMins);
+
+            // Show selected slot details in sidebar
+            const slotSummary = document.getElementById('selectedSlotSummary');
+            slotSummary.classList.remove('hidden');
+            document.getElementById('summarySlotDateText').textContent = selectedDate;
+            document.getElementById('summarySlotTimeText').textContent = `${selectedSlot} - ${endTimeStr}`;
+        }
+
+        // Helper function: Calculates end time string from start time string and total duration in minutes
+        function calculateEndTime(startTimeStr, durationMins) {
+            if (!startTimeStr) return '';
+            
+            // Parse time string (e.g. "10:00 AM" or "2:30 PM")
+            const parts = startTimeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (!parts) return '';
+            
+            let hours = parseInt(parts[1], 10);
+            const minutes = parseInt(parts[2], 10);
+            const period = parts[3].toUpperCase();
+            
+            if (period === 'PM' && hours < 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
+            
+            const totalStartMins = hours * 60 + minutes;
+            const totalEndMins = totalStartMins + durationMins;
+            
+            const endDecimal = totalEndMins / 60;
+            return formatDecimalTime(endDecimal);
+        }
+
+        // Helper function: Converts decimal hour into formatted 12-hour AM/PM string (e.g. 14.5 -> "2:30 PM")
+        function formatDecimalTime(decimal) {
+            let hrs = Math.floor(decimal);
+            const mins = Math.round((decimal % 1) * 60);
+            
+            // Handle overflow past 24 hours
+            hrs = hrs % 24;
+            
+            const period = hrs >= 12 ? 'PM' : 'AM';
+            const displayHrs = hrs > 12 ? hrs - 12 : (hrs === 0 ? 12 : hrs);
+            const displayMins = mins < 10 ? `0${mins}` : mins;
+            return `${displayHrs}:${displayMins} ${period}`;
+        }
+
+        function selectSlot(timeStr) {
+            selectedSlot = timeStr; // Set active time slot selection
+            generateSlots();        // Re-render slots to highlight selected button
+
+            // Sum up total duration of all selected services
+            let totalMins = 0;
+            selectedServiceIds.forEach(id => {
+                const s = SERVICES.find(x => x.id === id);
+                if (s) totalMins += s.duration;
+            });
+
+            // Calculate start and end times
+            const endTimeStr = calculateEndTime(timeStr, totalMins);
+
+            // Show selected slot details in sidebar
+            const slotSummary = document.getElementById('selectedSlotSummary');
+            slotSummary.classList.remove('hidden');
+            document.getElementById('summarySlotDateText').textContent = selectedDate;
+            document.getElementById('summarySlotTimeText').textContent = `${selectedSlot} - ${endTimeStr}`;
+        }
+
+        // Helper function: Calculates end time string from start time string and total duration in minutes
+        function calculateEndTime(startTimeStr, durationMins) {
+            if (!startTimeStr) return '';
+            
+            // Parse time string (e.g. "10:00 AM" or "2:30 PM")
+            const parts = startTimeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (!parts) return '';
+            
+            let hours = parseInt(parts[1], 10);
+            const minutes = parseInt(parts[2], 10);
+            const period = parts[3].toUpperCase();
+            
+            if (period === 'PM' && hours < 12) hours += 12;
+            if (period === 'AM' && hours === 12) hours = 0;
+            
+            const totalStartMins = hours * 60 + minutes;
+            const totalEndMins = totalStartMins + durationMins;
+            
+            const endDecimal = totalEndMins / 60;
+            return formatDecimalTime(endDecimal);
+        }
+
+        // ============================================================================
+        // 10. FORM SUBMISSION & N8N WEBHOOK INTEGRATION
+        // ============================================================================
+        async function submitBooking(event) {
+            event.preventDefault(); // Prevent default browser form submit behavior
+
+            const isPhoneValid = validatePhoneInput();
+            const isEmailValid = validateEmailInput();
+
+            if (!isPhoneValid || !isEmailValid) {
+                alert("Please correct the highlighted errors in the form before submitting.");
+                return;
+            }
+
+            // Calculate final totals and compile itemized service list
+            let totalMins = 0;
+            let totalPrice = 0;
+            const selectedServicesList = [];
+
+            selectedServiceIds.forEach(id => {
+                const s = SERVICES.find(x => x.id === id);
+                if (s) {
+                    totalMins += s.duration;
+                    totalPrice += s.price;
+                    selectedServicesList.push({ name: s.name, price: s.price, duration: s.duration });
+                }
+            });
+
+            // Construct JSON data payload expected by n8n Webhook node
+            const bookingPayload = {
+                action: "create_booking",
+                customer: {
+                    name: document.getElementById("custName").value.trim(),
+                    phone: document.getElementById("custPhone").value.trim(),
+                    email: document.getElementById("custEmail").value.trim(),
+                    notes: document.getElementById("custNotes").value.trim()
+                },
+                appointment: {
+                    date: selectedDate,
+                    slotTime: selectedSlot,
+                    totalDurationMinutes: totalMins,
+                    totalPrice: totalPrice,
+                    services: selectedServicesList
+                }
+            };
+
+            const userWebhook = document.getElementById("webhookUrlInput").value.trim();
+
+            // Perform HTTP POST to n8n webhook URL if provided by user
+            if (userWebhook && (userWebhook.startsWith('http://') || userWebhook.startsWith('https://'))) {
+                try {
+                    const response = await fetch(userWebhook, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(bookingPayload)
+                    });
+
+                    if (!response.ok) throw new Error("Webhook server returned non-200 status.");
+                    console.log("n8n Webhook successfully received booking:", bookingPayload);
+                } catch (error) {
+                    console.warn("Webhook fetch warning (proceeding with UI display):", error);
+                }
+            } else {
+                console.log("Demo Mode - Generated n8n Webhook Payload:", bookingPayload);
+            }
+
+            // Populate confirmation modal text elements
+            document.getElementById('modalClientName').textContent = bookingPayload.customer.name;
+            const endTimeStr = calculateEndTime(selectedSlot, totalMins);
+            document.getElementById('modalDateTime').textContent = `${selectedDate} @ ${selectedSlot} - ${endTimeStr}`;
+            document.getElementById('modalDuration').textContent = formatMinutes(totalMins);
+            document.getElementById('modalPrice').textContent = `$${totalPrice}`;
+
+            // Reveal confirmation success modal overlay
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        // Reset booking form app state for a new booking
+        function resetBookingApp() {
+            document.getElementById('successModal').classList.add('hidden');
+            selectedServiceIds.clear();
+            selectedSlot = null;
+            document.getElementById('selectedSlotSummary').classList.add('hidden');
+            document.getElementById('bookingForm').reset();
+            goToStep(1);
+            updateCartSummary();
+        }
+
+        // Copy n8n node code block to clipboard
+        function copyCode() {
+            const codeText = document.getElementById('codeNodeBlock').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = codeText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const copyBtnText = document.getElementById('copyBtnText');
+            copyBtnText.textContent = "Copied to Clipboard!";
+            setTimeout(() => {
+                copyBtnText.textContent = "Copy JS Code";
+            }, 2000);
+        }
+    </script>
 </body>
-
 </html>
-
-<!--Features-->
-<!--include a transition delay on about us page-->
-<!-- Need to add personal chatbot where they can easily ask questions instead of sending you emails, that offers flash cards,use turbolearn.ai for inspo on features ur LLM is supposed to have-->
- <!-- Offer bursuries/Scholarships to those who cannot afford -->
-  <!--Set assignments and quizzes to automark through google forms or webassign platform-->
-  <!-- Market through reddit-->
-   <!--No deadlines, Add a reminder to study button-->
-   <!-- Create a special coupon code where family members cqan take course for free,usable once-->
